@@ -1,0 +1,88 @@
+@let s = state();
+
+@if (s.status === 'ready') {
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a routerLink="/problemset">Problemset</a> › {{ s.data.contest_id }}{{ s.data.index }}
+  </nav>
+
+  <div class="layout">
+    <section class="roundbox">
+      <div class="caption">{{ s.data.contest_id }}{{ s.data.index }}. {{ s.data.name }}</div>
+      <div class="body">
+        <table class="facts">
+          <tbody>
+            <tr>
+              <th>Rating</th>
+              <td>
+                @if (s.data.rating !== null) {
+                  <span class="rating" [class]="s.data.rating | ratingClass">{{ s.data.rating }}</span>
+                } @else {
+                  <span class="muted">Unrated</span>
+                }
+              </td>
+            </tr>
+            <tr>
+              <th>Solved by</th>
+              <td>
+                @if (s.data.solved_count !== null) {
+                  {{ s.data.solved_count }} users
+                } @else {
+                  <span class="muted">Unknown</span>
+                }
+              </td>
+            </tr>
+            <tr>
+              <th>Tags</th>
+              <td>
+                @if (s.data.tags.length) {
+                  <div class="tags">
+                    @for (t of s.data.tags; track t) {
+                      <a class="tag" routerLink="/problemset" [queryParams]="{ tag: t }">{{ t }}</a>
+                    }
+                  </div>
+                } @else {
+                  <span class="muted">None</span>
+                }
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="statement-link">
+          <a class="button" [href]="s.data.url" target="_blank" rel="noopener noreferrer">
+            Read the statement on Codeforces ↗
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <aside>
+      <section class="roundbox" aria-labelledby="coach-title">
+        <div class="caption"><span id="coach-title">Coach</span></div>
+        <div class="body">
+          <label for="code">Your solution</label>
+          <textarea id="code" rows="6" disabled placeholder="Paste your code here"></textarea>
+          <div class="actions">
+            <button type="button" disabled>Get a hint</button>
+          </div>
+          <p class="muted note">
+            Graded hints, similar problems and counterexample finding arrive in later milestones.
+          </p>
+        </div>
+      </section>
+    </aside>
+  </div>
+} @else if (s.status === 'error') {
+  <section class="roundbox">
+    <div class="caption">{{ s.notFound ? 'Problem not found' : 'Something went wrong' }}</div>
+    <div class="empty">
+      @if (s.notFound) {
+        We don't have that problem. <a routerLink="/problemset">Back to the problemset</a>
+      } @else {
+        Couldn't load this problem. Is the API running?
+      }
+    </div>
+  </section>
+} @else {
+  <div class="empty" aria-live="polite">Loading…</div>
+}

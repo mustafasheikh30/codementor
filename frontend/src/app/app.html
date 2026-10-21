@@ -1,0 +1,23 @@
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" routerLink="/">Code<span>Mentor</span></a>
+    <span class="tagline">practice, understand, improve</span>
+  </div>
+</header>
+
+<nav class="menu" aria-label="Main">
+  <div class="wrap">
+    <a routerLink="/problemset" routerLinkActive="active">Problemset</a>
+    <span class="soon" title="Coming in a later milestone">Coach</span>
+    <span class="soon" title="Coming in a later milestone">Progress</span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <router-outlet />
+</main>
+
+<footer class="wrap footer">
+  CodeMentor is an independent learning project and is not affiliated with Codeforces.
+  Problem data comes from the public Codeforces API.
+</footer>

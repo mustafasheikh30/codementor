@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# CodeMentor
+.env
+*.db
+.pytest_cache/
+.ruff_cache/
+chroma_data/

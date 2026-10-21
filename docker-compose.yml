@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: codementor
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-codementor}
+      POSTGRES_DB: codementor
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"   # local-only, so `uv run ...` on your machine can reach it
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codementor -d codementor"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://codementor:${POSTGRES_PASSWORD:-codementor}@db:5432/codementor
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:

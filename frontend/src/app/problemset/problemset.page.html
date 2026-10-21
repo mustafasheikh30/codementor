@@ -1,0 +1,132 @@
+@if (meta()?.has_sample_data) {
+  <div class="notice" role="status">
+    Showing a small <strong>sample dataset</strong>. Load the real problemset with
+    <code>uv run python -m app.problems.ingest</code>.
+  </div>
+}
+
+<div class="layout">
+  <section class="roundbox" aria-labelledby="ps-title">
+    @let s = state();
+    <div class="caption">
+      <span id="ps-title">Problems</span>
+      @if (s.status === 'ready') {
+        <span class="count">{{ s.data.total }} found</span>
+      }
+    </div>
+
+    @if (s.status === 'ready') {
+      @if (s.data.items.length === 0) {
+        <div class="empty">
+          No problems match these filters. <a routerLink="/problemset">Reset filters</a>
+        </div>
+      } @else {
+        <div class="table-wrap">
+          <table class="problems">
+            <thead>
+              <tr>
+                <th class="code">#</th>
+                <th>Name</th>
+                <th class="num">Rating</th>
+                <th class="num">Solved</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of s.data.items; track p.url) {
+                <tr>
+                  <td class="code">
+                    <a [routerLink]="['/problem', p.contest_id, p.index]">{{ p.contest_id }}{{ p.index }}</a>
+                  </td>
+                  <td>
+                    <a [routerLink]="['/problem', p.contest_id, p.index]">{{ p.name }}</a>
+                    @if (p.tags.length) {
+                      <div class="tags">
+                        @for (t of p.tags; track t) {
+                          <a class="tag" routerLink="/problemset" [queryParams]="{ tag: t }">{{ t }}</a>
+                        }
+                      </div>
+                    }
+                  </td>
+                  <td class="num">
+                    @if (p.rating !== null) {
+                      <span class="rating" [class]="p.rating | ratingClass">{{ p.rating }}</span>
+                    } @else {
+                      <span class="muted">—</span>
+                    }
+                  </td>
+                  <td class="num">
+                    @if (p.solved_count !== null) {
+                      <span class="solved">x{{ p.solved_count }}</span>
+                    } @else {
+                      <span class="muted">—</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (pages().length > 1) {
+          <nav class="pagination" aria-label="Pages">
+            @for (item of pages(); track $index) {
+              @if (item.n === null) {
+                <span class="gap">…</span>
+              } @else {
+                <a
+                  [routerLink]="[]"
+                  [queryParams]="{ page: item.n }"
+                  queryParamsHandling="merge"
+                  [class.current]="item.current"
+                  [attr.aria-current]="item.current ? 'page' : null"
+                  >{{ item.n }}</a
+                >
+              }
+            }
+          </nav>
+        }
+      }
+    } @else if (s.status === 'error') {
+      <div class="empty">Couldn't load problems. Is the API running?</div>
+    } @else {
+      <div class="empty" aria-live="polite">Loading problems…</div>
+    }
+  </section>
+
+  <aside>
+    <form class="roundbox" [formGroup]="form" (ngSubmit)="apply()">
+      <div class="caption">Filter problems</div>
+      <div class="body">
+        <label for="f-q">Name or code</label>
+        <input id="f-q" type="search" formControlName="q" placeholder="e.g. watermelon or 4A" autocomplete="off" />
+
+        <label for="f-tag">Tag</label>
+        <select id="f-tag" formControlName="tag">
+          <option value="">All tags</option>
+          @for (t of tags(); track t.tag) {
+            <option [value]="t.tag">{{ t.tag }} ({{ t.count }})</option>
+          }
+        </select>
+
+        <label for="f-min">Difficulty</label>
+        <div class="row">
+          <input id="f-min" type="number" min="800" max="3500" step="100" formControlName="min_rating" placeholder="from" aria-label="Minimum rating" />
+          <input type="number" min="800" max="3500" step="100" formControlName="max_rating" placeholder="to" aria-label="Maximum rating" />
+        </div>
+
+        <label for="f-sort">Sort by</label>
+        <select id="f-sort" formControlName="sort">
+          <option value="newest">Newest first</option>
+          <option value="rating_asc">Rating, easiest first</option>
+          <option value="rating_desc">Rating, hardest first</option>
+          <option value="solved">Most solved</option>
+        </select>
+
+        <div class="actions">
+          <button type="submit">Apply</button>
+          <a routerLink="/problemset">Reset</a>
+        </div>
+      </div>
+    </form>
+  </aside>
+</div>

@@ -1,0 +1,4 @@
+.crumbs { color: var(--muted); margin-bottom: 12px; }
+.statement-link { margin: 16px 0 0; }
+.note { margin: 12px 0 0; font-size: 12px; }
+textarea { resize: vertical; font-family: ui-monospace, "DejaVu Sans Mono", monospace; }

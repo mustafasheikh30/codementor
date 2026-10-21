@@ -1,0 +1,29 @@
+:host { display: block; min-height: 100vh; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+
+.topbar { border-bottom: 1px solid var(--border); background: #0a0e14; }
+.topbar .wrap { display: flex; align-items: baseline; gap: 14px; padding-top: 14px; padding-bottom: 12px; }
+.brand { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.brand span { color: var(--link); }
+.brand:hover { text-decoration: none; color: var(--text); }
+.tagline { color: var(--muted); font-size: 12px; }
+
+.menu { background: var(--panel); border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+.menu .wrap { display: flex; gap: 2px; }
+.menu a, .menu .soon {
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-top: 2px solid transparent;
+}
+.menu a { color: var(--text); }
+.menu a:hover { background: var(--panel-head); text-decoration: none; }
+.menu a.active { color: var(--link); border-top-color: var(--link); background: var(--panel-head); }
+.menu .soon { color: #5d6877; cursor: default; }
+
+main { min-height: 60vh; }
+
+.footer { padding-top: 24px; padding-bottom: 28px; color: var(--muted); font-size: 11px; }
