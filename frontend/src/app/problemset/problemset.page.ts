@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { ProblemApi } from '../api/problem-api';
+import { AuthApi } from '../api/auth-api';
+import { AuthService } from '../auth/auth.service';
 import { Meta, ProblemPage, ProblemQuery, TagCount } from '../api/models';
 import { LOADING, LoadState, load } from '../shared/load-state';
 import { pageItems } from '../shared/pagination';
@@ -20,6 +22,16 @@ export class ProblemsetPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly api = inject(ProblemApi);
+  private readonly authApi = inject(AuthApi);
+  protected readonly auth = inject(AuthService);
+
+  protected readonly solvedSet = toSignal(
+    this.authApi.solvedList().pipe(
+      map((list) => new Set(list.map((s) => `${s.contest_id}${s.index}`))),
+      catchError(() => of(new Set<string>())),
+    ),
+    { initialValue: new Set<string>() },
+  );
 
   protected readonly form = new FormGroup({
     q: new FormControl('', { nonNullable: true }),
@@ -27,6 +39,7 @@ export class ProblemsetPage {
     min_rating: new FormControl('', { nonNullable: true }),
     max_rating: new FormControl('', { nonNullable: true }),
     sort: new FormControl('newest', { nonNullable: true }),
+    solved: new FormControl('', { nonNullable: true }),
   });
 
   protected readonly tags = toSignal(
@@ -50,6 +63,7 @@ export class ProblemsetPage {
           min_rating: p.get('min_rating') ?? '',
           max_rating: p.get('max_rating') ?? '',
           sort: p.get('sort') ?? 'newest',
+          solved: p.get('solved') ?? '',
           page: Number(p.get('page')) || 1,
         }),
       ),
@@ -76,6 +90,7 @@ export class ProblemsetPage {
         min_rating: v.min_rating || null,
         max_rating: v.max_rating || null,
         sort: v.sort === 'newest' ? null : v.sort,
+        solved: v.solved || null,
         page: null,
       },
     });

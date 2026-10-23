@@ -55,3 +55,27 @@ def test_tag_counts(seeded):
     counts = dict(service.tag_counts(seeded))
     assert counts["math"] == 2
     assert counts["dp"] == 1
+
+
+def test_solved_filter_requires_user(seeded):
+    problems, total = service.list_problems(seeded, solved_filter="true")
+    assert total == 5
+    assert len(problems) == 5
+
+
+def test_solved_filter_returns_only_user_problems(seeded):
+    from app.solved.models import UserProblemSolved
+    from app.users.models import User
+
+    user = User(codeforces_subject="test-subject", handle="tester")
+    seeded.add(user)
+    seeded.commit()
+    seeded.refresh(user)
+    seeded.add(UserProblemSolved(user_id=user.id, contest_id=4, index="A"))
+    seeded.commit()
+    problems, total = service.list_problems(seeded, solved_filter="true", user_id=user.id)
+    assert total == 1
+    assert names(problems) == ["Watermelon"]
+    problems, total = service.list_problems(seeded, solved_filter="false", user_id=user.id)
+    assert total == 4
+    assert "Watermelon" not in names(problems)

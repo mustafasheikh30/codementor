@@ -31,3 +31,8 @@ def test_tags_endpoint(client, seeded):
 
 def test_meta_flags_sample_data(client, seeded):
     assert client.get("/api/meta").json() == {"problem_count": 5, "has_sample_data": False}
+
+
+def test_list_problems_solved_filter_is_ignored_when_anonymous(client, seeded):
+    body = client.get("/api/problems", params={"solved": "true"}).json()
+    assert body["total"] == 5

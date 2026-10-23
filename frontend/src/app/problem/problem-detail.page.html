@@ -48,11 +48,21 @@
           </tbody>
         </table>
 
-        <p class="statement-link">
+        <div class="actions-row">
           <a class="button" [href]="s.data.url" target="_blank" rel="noopener noreferrer">
             Read the statement on Codeforces ↗
           </a>
-        </p>
+          @if (auth.user()) {
+            <button type="button" (click)="toggleSolved()">
+              {{ solved() ? 'Mark as unsolved' : 'Mark as solved' }}
+            </button>
+            @if (solved()) {
+              <span class="solved-badge">Solved ✓</span>
+            }
+          } @else {
+            <button type="button" (click)="login()">Sign in to track progress</button>
+          }
+        </div>
       </div>
     </section>
 
@@ -61,12 +71,36 @@
         <div class="caption"><span id="coach-title">Coach</span></div>
         <div class="body">
           <label for="code">Your solution</label>
-          <textarea id="code" rows="6" disabled placeholder="Paste your code here"></textarea>
+          <textarea
+            id="code"
+            rows="8"
+            [value]="code()"
+            (input)="code.set($any($event.target).value)"
+            placeholder="Paste your code here"
+          ></textarea>
           <div class="actions">
-            <button type="button" disabled>Get a hint</button>
+            @if (auth.user()) {
+              <button type="button" (click)="requestHint()" [disabled]="hintLoading() || !code().trim()">
+                {{ hint() ? 'Another hint' : 'Get a hint' }}
+              </button>
+              @if (hintLoading()) {
+                <span class="muted" aria-live="polite">Thinking…</span>
+              }
+            } @else {
+              <button type="button" (click)="login()">Sign in for hints</button>
+            }
           </div>
+          @if (hintError(); as error) {
+            <div class="notice" role="alert">{{ error }}</div>
+          }
+          @if (hint(); as text) {
+            <div class="hint" aria-live="polite">
+              <div class="muted">Hint {{ hintLevel() }} of 3</div>
+              <p>{{ text }}</p>
+            </div>
+          }
           <p class="muted note">
-            Graded hints, similar problems and counterexample finding arrive in later milestones.
+            Hints come from an external AI provider. Your code is not executed by CodeMentor.
           </p>
         </div>
       </section>

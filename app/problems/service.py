@@ -1,9 +1,10 @@
 from collections import Counter
 
-from sqlalchemy import String, cast, func, or_
+from sqlalchemy import String, cast, exists, func, or_
 from sqlmodel import Session, select
 
 from app.problems.models import Problem, encode_tags
+from app.solved.models import UserProblemSolved
 
 SORTS = {
     "newest": (Problem.contest_id.desc(), Problem.index.asc()),
@@ -22,6 +23,8 @@ def list_problems(
     min_rating: int | None = None,
     max_rating: int | None = None,
     sort: str = "newest",
+    solved_filter: str = "",
+    user_id: int | None = None,
     page: int = 1,
     page_size: int = 50,
 ) -> tuple[list[Problem], int]:
@@ -39,6 +42,21 @@ def list_problems(
         stmt = stmt.where(Problem.rating >= min_rating)
     if max_rating is not None:
         stmt = stmt.where(Problem.rating <= max_rating)
+
+    if solved_filter == "true" and user_id is not None:
+        stmt = stmt.join(
+            UserProblemSolved,
+            (UserProblemSolved.contest_id == Problem.contest_id)
+            & (UserProblemSolved.index == Problem.index)
+            & (UserProblemSolved.user_id == user_id),
+        )
+    elif solved_filter == "false" and user_id is not None:
+        already_solved = exists().where(
+            UserProblemSolved.user_id == user_id,
+            UserProblemSolved.contest_id == Problem.contest_id,
+            UserProblemSolved.index == Problem.index,
+        )
+        stmt = stmt.where(~already_solved)
 
     total = session.exec(select(func.count()).select_from(stmt.subquery())).one()
 

@@ -19,6 +19,14 @@ services:
     build: .
     environment:
       DATABASE_URL: postgresql+psycopg://codementor:${POSTGRES_PASSWORD:-codementor}@db:5432/codementor
+      # Passed through from .env; empty values keep sign-in disabled.
+      CODEFORCES_OIDC_CLIENT_ID: ${CODEFORCES_OIDC_CLIENT_ID:-}
+      CODEFORCES_OIDC_CLIENT_SECRET: ${CODEFORCES_OIDC_CLIENT_SECRET:-}
+      CODEFORCES_OIDC_STATE_SECRET: ${CODEFORCES_OIDC_STATE_SECRET:-}
+      CODEFORCES_OIDC_REDIRECT_URI: ${CODEFORCES_OIDC_REDIRECT_URI:-http://localhost:8080/api/auth/callback}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.openai.com/v1}
+      AI_MODEL: ${AI_MODEL:-}
     depends_on:
       db:
         condition: service_healthy

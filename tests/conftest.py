@@ -22,7 +22,7 @@ from app.problems.models import Problem, encode_tags
 ALEMBIC_INI = Path(__file__).resolve().parents[1] / "alembic.ini"
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def _migrated_database() -> Iterator[None]:
     """Build the schema with the real migrations (so they are tested too), then tear down."""
     config = Config(str(ALEMBIC_INI))
@@ -32,9 +32,9 @@ def _migrated_database() -> Iterator[None]:
 
 
 @pytest.fixture
-def session() -> Iterator[Session]:
+def session(_migrated_database: None) -> Iterator[Session]:
     with Session(engine) as s:
-        s.execute(text("TRUNCATE TABLE problem RESTART IDENTITY"))
+        s.execute(text("TRUNCATE TABLE user_problem_solved, users, problem RESTART IDENTITY"))
         s.commit()
         yield s
 

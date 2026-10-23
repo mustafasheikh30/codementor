@@ -1,0 +1,58 @@
+@if (data(); as d) {
+  @if (!d.user) {
+    <section class="roundbox">
+      <div class="caption">Progress</div>
+      <div class="empty">
+        Sign in to track your progress. <button type="button" (click)="login()">Sign in with Codeforces</button>
+      </div>
+    </section>
+  } @else {
+    <h1>Progress</h1>
+    <div class="layout">
+      <section class="roundbox">
+        <div class="caption">Overview</div>
+        <div class="body">
+          <div class="big">{{ d.progress?.solved_count ?? 0 }}</div>
+          <div class="muted">Problems solved</div>
+        </div>
+      </section>
+
+      <aside>
+        <section class="roundbox">
+          <div class="caption">By difficulty</div>
+          <div class="body">
+            @if (!d.progress || d.progress.by_difficulty.length === 0) {
+              <div class="muted">No solved problems yet.</div>
+            } @else {
+              <table class="simple">
+                <tbody>
+                  @for (b of d.progress.by_difficulty; track b.rating) {
+                    <tr>
+                      <td>{{ b.rating ?? 'Unrated' }}</td>
+                      <td class="num">{{ b.count }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    @if (d.solvedProblems.length > 0) {
+      <section class="roundbox">
+        <div class="caption">Solved problems</div>
+        <div class="body">
+          <div class="recent">
+            @for (s of d.solvedProblems; track s.contest_id + s.index) {
+              <a [routerLink]="['/problem', s.contest_id, s.index]">{{ s.contest_id }}{{ s.index }}</a>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  }
+} @else {
+  <div class="empty">Loading progress…</div>
+}

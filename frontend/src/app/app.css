@@ -3,11 +3,21 @@
 .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 
 .topbar { border-bottom: 1px solid var(--border); background: #0a0e14; }
-.topbar .wrap { display: flex; align-items: baseline; gap: 14px; padding-top: 14px; padding-bottom: 12px; }
+.topbar .wrap { display: flex; align-items: baseline; gap: 14px; padding-top: 14px; padding-bottom: 12px; flex-wrap: wrap; }
 .brand { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
 .brand span { color: var(--link); }
 .brand:hover { text-decoration: none; color: var(--text); }
 .tagline { color: var(--muted); font-size: 12px; }
+.auth { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 12px; }
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--link);
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.link-btn:hover { color: var(--link-hover); text-decoration: underline; }
 
 .menu { background: var(--panel); border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 .menu .wrap { display: flex; gap: 2px; }

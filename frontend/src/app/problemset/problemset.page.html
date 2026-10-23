@@ -35,6 +35,9 @@
               @for (p of s.data.items; track p.url) {
                 <tr>
                   <td class="code">
+                    @if (solvedSet().has(p.contest_id + p.index)) {
+                      <span title="Solved">✓</span>
+                    }
                     <a [routerLink]="['/problem', p.contest_id, p.index]">{{ p.contest_id }}{{ p.index }}</a>
                   </td>
                   <td>
@@ -113,6 +116,15 @@
           <input id="f-min" type="number" min="800" max="3500" step="100" formControlName="min_rating" placeholder="from" aria-label="Minimum rating" />
           <input type="number" min="800" max="3500" step="100" formControlName="max_rating" placeholder="to" aria-label="Maximum rating" />
         </div>
+
+        @if (auth.user()) {
+          <label for="f-solved">Status</label>
+          <select id="f-solved" formControlName="solved">
+            <option value="">All problems</option>
+            <option value="false">Unsolved</option>
+            <option value="true">Solved</option>
+          </select>
+        }
 
         <label for="f-sort">Sort by</label>
         <select id="f-sort" formControlName="sort">

@@ -1,0 +1,5 @@
+.profile-head { display: flex; align-items: center; gap: 16px; }
+.avatar { width: 64px; height: 64px; border-radius: 4px; border: 1px solid var(--border); }
+.handle { font-size: 18px; font-weight: 700; }
+.stat { font-size: 16px; font-weight: 600; }
+.actions { margin-top: 12px; }

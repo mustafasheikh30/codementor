@@ -6,6 +6,8 @@ from sqlmodel import SQLModel
 
 from app.core.config import settings
 from app.problems import models  # noqa: F401  (importing registers the tables)
+from app.solved import models as solved_models  # noqa: F401  (register solved table)
+from app.users import models as user_models  # noqa: F401  (register the users table)
 
 config = context.config
 if config.config_file_name is not None:

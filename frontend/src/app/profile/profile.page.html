@@ -1,0 +1,48 @@
+@if (auth.user(); as u) {
+  <div class="layout">
+    <section class="roundbox">
+      <div class="caption">Profile</div>
+      <div class="body">
+        <div class="profile-head">
+          @if (u.avatar) {
+            <img class="avatar" [src]="u.avatar" [alt]="u.handle" />
+          }
+          <div>
+            <div class="handle">{{ u.handle }}</div>
+            @if (u.rating !== null) {
+              <div class="muted">Codeforces rating: {{ u.rating }}</div>
+            } @else {
+              <div class="muted">Unrated</div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside>
+      <section class="roundbox">
+        <div class="caption">Progress</div>
+        <div class="body">
+          @let cs = countState();
+          @if (cs.status === 'ready') {
+            <div class="stat">{{ cs.data.count }} problems solved</div>
+          } @else {
+            <div class="muted">Loading…</div>
+          }
+          <div class="actions">
+            <a class="button" routerLink="/progress">View progress dashboard</a>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+} @else if (auth.loaded()) {
+  <section class="roundbox">
+    <div class="caption">Profile</div>
+    <div class="empty">
+      You are not signed in. <button type="button" (click)="login()">Sign in with Codeforces</button>
+    </div>
+  </section>
+} @else {
+  <div class="empty">Loading profile…</div>
+}

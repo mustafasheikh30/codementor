@@ -34,5 +34,45 @@ export interface ProblemQuery {
   min_rating?: string;
   max_rating?: string;
   sort?: string;
+  solved?: string;
   page?: number;
+}
+
+export interface User {
+  id: number;
+  handle: string;
+  rating: number | null;
+  avatar: string | null;
+}
+
+export interface SolvedStatus {
+  solved: boolean;
+}
+
+export interface SolvedCount {
+  count: number;
+}
+
+export interface SolvedEntry {
+  contest_id: number;
+  index: string;
+}
+
+export interface DifficultyBucket {
+  rating: number | null;
+  count: number;
+}
+
+export interface UserProgress {
+  solved_count: number;
+  by_difficulty: DifficultyBucket[];
+}
+
+export interface HintRequest {
+  code: string;
+  level: number;
+}
+
+export interface HintResponse {
+  hint: string;
 }

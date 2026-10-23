@@ -2,14 +2,25 @@
   <div class="wrap">
     <a class="brand" routerLink="/">Code<span>Mentor</span></a>
     <span class="tagline">practice, understand, improve</span>
+    <div class="auth">
+      @if (auth.loading()) {
+        <span class="muted">…</span>
+      } @else if (auth.user(); as u) {
+        <a routerLink="/profile">{{ u.handle }}</a>
+        <button type="button" class="link-btn" (click)="logout()">Logout</button>
+      } @else {
+        <button type="button" class="link-btn" (click)="login()">Sign in with Codeforces</button>
+      }
+    </div>
   </div>
 </header>
 
 <nav class="menu" aria-label="Main">
   <div class="wrap">
     <a routerLink="/problemset" routerLinkActive="active">Problemset</a>
+    <a routerLink="/profile" routerLinkActive="active">Profile</a>
+    <a routerLink="/progress" routerLinkActive="active">Progress</a>
     <span class="soon" title="Coming in a later milestone">Coach</span>
-    <span class="soon" title="Coming in a later milestone">Progress</span>
   </div>
 </nav>
 

@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 
 from app.core.db import SessionDep
 from app.problems import service
 from app.problems.schemas import Meta, ProblemPage, ProblemRead, TagCount
+from app.users.routes import session_user_id
 
 router = APIRouter(prefix="/api", tags=["problems"])
 
@@ -11,15 +12,18 @@ router = APIRouter(prefix="/api", tags=["problems"])
 # FastAPI runs plain `def` routes in a thread pool so they don't block the event loop.
 @router.get("/problems", response_model=ProblemPage)
 def list_problems(
+    request: Request,
     session: SessionDep,
     q: str = "",
     tag: str = "",
     min_rating: int | None = None,
     max_rating: int | None = None,
     sort: str = "newest",
+    solved: str = "",
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
 ) -> ProblemPage:
+    user_id = session_user_id(request) if solved in {"true", "false"} else None
     items, total = service.list_problems(
         session,
         q=q.strip(),
@@ -27,6 +31,8 @@ def list_problems(
         min_rating=min_rating,
         max_rating=max_rating,
         sort=sort,
+        solved_filter=solved,
+        user_id=user_id,
         page=page,
         page_size=page_size,
     )

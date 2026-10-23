@@ -1,0 +1,7 @@
+.big { font-size: 32px; font-weight: 700; }
+.simple { width: 100%; border-collapse: collapse; }
+.simple td { padding: 4px 0; border-bottom: 1px solid var(--border); }
+.simple tr:last-child td { border-bottom: 0; }
+.simple .num { text-align: right; color: var(--muted); }
+.recent { display: flex; flex-wrap: wrap; gap: 10px; }
+.actions { margin-top: 12px; }
