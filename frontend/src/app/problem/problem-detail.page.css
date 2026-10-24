@@ -2,7 +2,11 @@
 .actions-row { margin: 16px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .note { margin: 12px 0 0; font-size: 12px; }
 textarea { resize: vertical; font-family: ui-monospace, "DejaVu Sans Mono", monospace; }
+input[type='text'] { font-family: ui-monospace, "DejaVu Sans Mono", monospace; }
 .solved-badge { color: var(--r-green); font-weight: 600; }
 .hint { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 4px; }
 .hint p { margin: 6px 0 0; white-space: pre-wrap; }
 .notice { margin-top: 12px; }
+.success { color: var(--r-green); }
+.submission-row { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.lang-input { max-width: 260px; }

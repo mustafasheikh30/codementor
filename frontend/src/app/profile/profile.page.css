@@ -3,3 +3,6 @@
 .handle { font-size: 18px; font-weight: 700; }
 .stat { font-size: 16px; font-weight: 600; }
 .actions { margin-top: 12px; }
+.submissions { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.submissions li { display: flex; flex-direction: column; gap: 2px; }
+aside { display: flex; flex-direction: column; gap: 12px; }

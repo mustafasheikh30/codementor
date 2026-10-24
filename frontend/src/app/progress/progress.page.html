@@ -52,6 +52,41 @@
         </div>
       </section>
     }
+
+    <section class="roundbox">
+      <div class="caption">Submission history</div>
+      <div class="body">
+        @if (d.submissions.length === 0) {
+          <div class="muted">No submissions recorded yet. Record attempts from a problem page.</div>
+        } @else {
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Problem</th>
+                  <th>Language</th>
+                  <th>Verdict</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (sub of d.submissions; track sub.id) {
+                  <tr>
+                    <td>
+                      <a [routerLink]="['/problem', sub.contest_id, sub.index]">{{ sub.contest_id }}{{ sub.index }}</a>
+                      @if (sub.problem_name) {
+                        <span class="muted"> · {{ sub.problem_name }}</span>
+                      }
+                    </td>
+                    <td>{{ sub.language }}</td>
+                    <td>{{ sub.verdict }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </section>
   }
 } @else {
   <div class="empty">Loading progress…</div>

@@ -34,7 +34,9 @@ def _migrated_database() -> Iterator[None]:
 @pytest.fixture
 def session(_migrated_database: None) -> Iterator[Session]:
     with Session(engine) as s:
-        s.execute(text("TRUNCATE TABLE user_problem_solved, users, problem RESTART IDENTITY"))
+        s.execute(
+            text("TRUNCATE TABLE submissions, user_problem_solved, users, problem RESTART IDENTITY")
+        )
         s.commit()
         yield s
 

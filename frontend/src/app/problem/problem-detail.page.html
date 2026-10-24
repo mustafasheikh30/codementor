@@ -78,8 +78,22 @@
             (input)="code.set($any($event.target).value)"
             placeholder="Paste your code here"
           ></textarea>
+          <div class="submission-row">
+            <label for="language">Language</label>
+            <input
+              id="language"
+              class="lang-input"
+              type="text"
+              [value]="language()"
+              (input)="language.set($any($event.target).value)"
+              placeholder="Python 3, C++17, etc."
+            />
+          </div>
           <div class="actions">
             @if (auth.user()) {
+              <button type="button" (click)="recordSubmission()" [disabled]="submissionLoading() || !code().trim()">
+                {{ submissionLoading() ? 'Recording…' : 'Record submission' }}
+              </button>
               <button type="button" (click)="requestHint()" [disabled]="hintLoading() || !code().trim()">
                 {{ hint() ? 'Another hint' : 'Get a hint' }}
               </button>
@@ -87,9 +101,15 @@
                 <span class="muted" aria-live="polite">Thinking…</span>
               }
             } @else {
-              <button type="button" (click)="login()">Sign in for hints</button>
+              <button type="button" (click)="login()">Sign in to record &amp; get hints</button>
             }
           </div>
+          @if (submissionMessage(); as message) {
+            <div class="notice success" role="status">{{ message }}</div>
+          }
+          @if (submissionError(); as error) {
+            <div class="notice" role="alert">{{ error }}</div>
+          }
           @if (hintError(); as error) {
             <div class="notice" role="alert">{{ error }}</div>
           }
@@ -100,7 +120,7 @@
             </div>
           }
           <p class="muted note">
-            Hints come from an external AI provider. Your code is not executed by CodeMentor.
+            CodeMentor records your attempts for your learning history. Code is never executed by the API.
           </p>
         </div>
       </section>

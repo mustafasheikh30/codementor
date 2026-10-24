@@ -17,13 +17,14 @@
 - `app/problems/` — Codeforces problem metadata, problem queries, API routes, and problem ingestion.
 - `app/users/` — Codeforces OIDC, local accounts, and session authentication.
 - `app/solved/` — Per-user solved-problem tracking and progress aggregation.
+- `app/submissions/` — Recorded code attempts with metadata and per-user access control.
 - `app/ai/` — Progressive-hint coach backed by an OpenAI-compatible chat-completions provider.
-- `app/submissions/`, `app/sandbox/` — Planned boundaries for submission history and isolated code execution.
+- `app/sandbox/` — Planned isolated code execution and resource limits.
 - `frontend/`, `migrations/`, `data/`, `tests/` — Angular interface, database migrations, bundled sample problem data, and automated tests.
 
 ## Storage Model
 
-- **PostgreSQL**: Codeforces problem metadata, user accounts, sessions, and per-user solved-problem tracking are stored in the current implementation. Submission history and learning reports will be stored here as their features are implemented.
+- **PostgreSQL**: Codeforces problem metadata, user accounts, sessions, per-user solved-problem tracking, and submission history are stored in the current implementation. Learning reports and recommendations will be stored here as their features are implemented.
 - **AI provider**: Hints are generated on demand and are not persisted. Any OpenAI-compatible chat-completions endpoint can be configured; the coach is disabled when credentials/model are missing.
 - **File Storage**: No separate file or blob storage is currently configured. Add it only if a future feature requires persistent storage for files or large artifacts.
 

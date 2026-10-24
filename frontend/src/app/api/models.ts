@@ -76,3 +76,22 @@ export interface HintRequest {
 export interface HintResponse {
   hint: string;
 }
+
+export interface Submission {
+  id: number;
+  contest_id: number;
+  index: string;
+  problem_name: string | null;
+  language: string;
+  verdict: string;
+  created_at: string;
+}
+
+export interface SubmissionDetail extends Submission {
+  code: string;
+}
+
+export interface SubmissionPage {
+  total: number;
+  items: Submission[];
+}

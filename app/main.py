@@ -6,7 +6,9 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.ai.routes import router as ai_router
 from app.core.config import settings
 from app.problems.routes import router as problems_router
+from app.sandbox.routes import router as sandbox_router
 from app.solved.routes import router as solved_router
+from app.submissions.routes import router as submissions_router
 from app.users.routes import router as users_router
 
 # Everything lives under /api so one reverse proxy rule (/api -> this app) is enough
@@ -20,6 +22,8 @@ app = FastAPI(
 app.include_router(problems_router)
 app.include_router(users_router)
 app.include_router(solved_router)
+app.include_router(submissions_router)
+app.include_router(sandbox_router)
 app.include_router(ai_router)
 
 # Authlib keeps temporary OIDC state/nonce values in a signed session cookie.

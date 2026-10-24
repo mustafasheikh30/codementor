@@ -5,13 +5,15 @@ import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AuthApi } from '../api/auth-api';
-import { SolvedEntry, User, UserProgress } from '../api/models';
+import { SolvedEntry, Submission, User, UserProgress } from '../api/models';
 import { AuthService } from '../auth/auth.service';
+import { SubmissionApi } from '../api/submission-api';
 
 interface ProgressView {
   user: User | null;
   progress: UserProgress | null;
   solvedProblems: SolvedEntry[];
+  submissions: Submission[];
 }
 
 @Component({
@@ -24,6 +26,7 @@ interface ProgressView {
 export class ProgressPage {
   private readonly auth = inject(AuthService);
   private readonly authApi = inject(AuthApi);
+  private readonly submissionApi = inject(SubmissionApi);
 
   protected readonly data = toSignal(
     forkJoin({
@@ -32,12 +35,16 @@ export class ProgressPage {
       solved: this.authApi
         .solvedList()
         .pipe(catchError(() => of([] as SolvedEntry[]))),
+      submissions: this.submissionApi
+        .list(50)
+        .pipe(catchError(() => of({ total: 0, items: [] as Submission[] }))),
     }).pipe(
       map(
-        ({ user, progress, solved }): ProgressView => ({
+        ({ user, progress, solved, submissions }): ProgressView => ({
           user,
           progress,
           solvedProblems: solved.slice(0, 100),
+          submissions: submissions.items,
         }),
       ),
     ),

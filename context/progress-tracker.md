@@ -5,11 +5,11 @@ change.
 
 ## Current Phase
 
-- AI coach MVP implemented on the authenticated problem page.
+- End-to-end readiness check (no new feature work).
 
 ## Current Goal
 
-- Verify the coach with a configured provider, then add submission history and sandboxed execution.
+- Verify startup, DB connectivity, Docker permissions safely, sandbox isolation constraints, main flows, and all checks.
 
 ## Completed
 
@@ -26,7 +26,7 @@ change.
 - Authentication test suite passes (14 tests) without requiring a database.
 - Persistent local user accounts linked to verified Codeforces identities added (SQLModel `User`, upsert/lookup service).
 - Session-based authentication endpoints added (`GET /api/auth/me`, `POST /api/auth/logout`); app sessions use `codementor_session` (14 days).
-- Users migration (`0002_create_users_table`) added and wired into Alembic; tests updated for user truncation and DB-backed user service coverage.
+- Users migration (`0002_create_users_table`) applied; tests updated for user truncation and DB-backed user service coverage.
 - Full test suite verified against dedicated PostgreSQL `codementor_test`.
 - Per-user solved-problem tracking added (`user_problem_solved`, migration 0003) with mark/unmark/status/list/count endpoints.
 - Problemset solved filter added (`?solved=true|false`, ignored for anonymous requests).
@@ -36,16 +36,18 @@ change.
 - Progress endpoint aggregates solved count and difficulty buckets without N+1 frontend requests.
 - AI coach endpoint and problem-page hint UI added; provider configuration is optional and the coach returns 503 when disabled.
 - Coach service and route tests cover prompt context, provider parsing, timeouts/errors, authentication, and missing problems.
+- Submission history added (`submissions` table, migration 0004) applied to `codementor` after backup; authenticated record/list/detail endpoints, per-user isolation, and validation.
+- Problem page records submissions with language; profile and progress show recent/history submissions. DB-free service and route tests added.
+- Migrations 0002-0004 applied to `codementor`; DB-backed tests run against `codementor_test` (18 passed). All DB-free tests pass (31), lint clean, frontend tests/build pass.
+- Sandboxed execution module added (`app/sandbox/`) with Docker-based isolated design, resource limits (CPU/memory/pids/ulimits), read-only filesystem, no network by default, disabled by default. Authenticated API endpoint `/api/sandbox/execute`. DB-free service and route tests added (8 passed). No code executed on host.
 
 ## In Progress
 
-- Verifying the full login → browse → coach → mark solved → progress → logout flow with real OIDC and AI credentials.
+- End-to-end readiness verification (startup, DB, Docker permissions, sandbox isolation, flows).
 
 ## Next Up
 
-- Add submission history as the reliable source for activity and progress over time.
-- Define sandbox implementation and execution support for Codeforces languages.
-- Add personalized reports and recommendations.
+- After readiness verification, consider personalized reports and recommendations. Sandbox remains disabled until secure isolation backend is available/configured.
 
 ## Open Questions
 

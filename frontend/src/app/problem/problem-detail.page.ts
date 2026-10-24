@@ -7,6 +7,7 @@ import { Problem } from '../api/models';
 import { ProblemApi } from '../api/problem-api';
 import { AuthApi } from '../api/auth-api';
 import { CoachApi } from '../api/coach-api';
+import { SubmissionApi } from '../api/submission-api';
 import { AuthService } from '../auth/auth.service';
 import { LOADING, LoadState, load } from '../shared/load-state';
 import { RatingClassPipe } from '../shared/rating-class.pipe';
@@ -23,6 +24,7 @@ export class ProblemDetailPage {
   private readonly api = inject(ProblemApi);
   private readonly authApi = inject(AuthApi);
   private readonly coachApi = inject(CoachApi);
+  private readonly submissionApi = inject(SubmissionApi);
   protected readonly auth = inject(AuthService);
 
   protected readonly state = toSignal(
@@ -38,6 +40,10 @@ export class ProblemDetailPage {
   protected readonly hintLevel = signal(0);
   protected readonly hintLoading = signal(false);
   protected readonly hintError = signal<string | null>(null);
+  protected readonly language = signal('Python 3');
+  protected readonly submissionMessage = signal<string | null>(null);
+  protected readonly submissionError = signal<string | null>(null);
+  protected readonly submissionLoading = signal(false);
 
   constructor() {
     this.route.paramMap
@@ -46,6 +52,8 @@ export class ProblemDetailPage {
           this.hint.set(null);
           this.hintLevel.set(0);
           this.hintError.set(null);
+          this.submissionMessage.set(null);
+          this.submissionError.set(null);
           const c = Number(p.get('contestId'));
           const i = p.get('index') ?? '';
           return this.authApi.getSolvedStatus(c, i).pipe(catchError(() => of({ solved: false })));
@@ -99,6 +107,49 @@ export class ProblemDetailPage {
           this.hintError.set('The coach is not configured on this server.');
         } else {
           this.hintError.set('Could not get a hint. Try again.');
+        }
+      },
+    });
+  }
+
+  recordSubmission(): void {
+    const s = this.state();
+    if (s.status !== 'ready') return;
+    if (!this.auth.user()) {
+      this.login();
+      return;
+    }
+    const code = this.code().trim();
+    if (!code) {
+      this.submissionError.set('Paste your solution before recording it.');
+      this.submissionMessage.set(null);
+      return;
+    }
+    const language = this.language().trim();
+    if (!language) {
+      this.submissionError.set('Add a language before recording it.');
+      this.submissionMessage.set(null);
+      return;
+    }
+    this.submissionLoading.set(true);
+    this.submissionError.set(null);
+    this.submissionMessage.set(null);
+    this.submissionApi.create(s.data.contest_id, s.data.index, language, this.code()).subscribe({
+      next: (submission) => {
+        this.submissionLoading.set(false);
+        this.submissionMessage.set(
+          `Recorded submission #${submission.id} (${submission.language}).`,
+        );
+      },
+      error: (error: { status?: number }) => {
+        this.submissionLoading.set(false);
+        if (error.status === 401) {
+          this.auth.clear();
+          this.submissionError.set('Your session expired. Sign in again to record submissions.');
+        } else if (error.status === 404) {
+          this.submissionError.set('Problem not found.');
+        } else {
+          this.submissionError.set('Could not record the submission. Try again.');
         }
       },
     });

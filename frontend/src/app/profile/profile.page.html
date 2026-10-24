@@ -2,40 +2,69 @@
   <div class="layout">
     <section class="roundbox">
       <div class="caption">Profile</div>
-      <div class="body">
-        <div class="profile-head">
-          @if (u.avatar) {
-            <img class="avatar" [src]="u.avatar" [alt]="u.handle" />
-          }
-          <div>
-            <div class="handle">{{ u.handle }}</div>
-            @if (u.rating !== null) {
-              <div class="muted">Codeforces rating: {{ u.rating }}</div>
-            } @else {
-              <div class="muted">Unrated</div>
-            }
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <aside>
-      <section class="roundbox">
-        <div class="caption">Progress</div>
         <div class="body">
-          @let cs = countState();
-          @if (cs.status === 'ready') {
-            <div class="stat">{{ cs.data.count }} problems solved</div>
-          } @else {
-            <div class="muted">Loading…</div>
-          }
-          <div class="actions">
-            <a class="button" routerLink="/progress">View progress dashboard</a>
+          <div class="profile-head">
+            @if (u.avatar) {
+              <img class="avatar" [src]="u.avatar" [alt]="u.handle" />
+            }
+            <div>
+              <div class="handle">{{ u.handle }}</div>
+              @if (u.rating !== null) {
+                <div class="muted">Codeforces rating: {{ u.rating }}</div>
+              } @else {
+                <div class="muted">Unrated</div>
+              }
+            </div>
           </div>
         </div>
       </section>
-    </aside>
-  </div>
+
+      <aside>
+        <section class="roundbox">
+          <div class="caption">Progress</div>
+          <div class="body">
+            @let cs = countState();
+            @if (cs.status === 'ready') {
+              <div class="stat">{{ cs.data.count }} problems solved</div>
+            } @else {
+              <div class="muted">Loading…</div>
+            }
+            <div class="actions">
+              <a class="button" routerLink="/progress">View progress dashboard</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="roundbox">
+          <div class="caption">Recent submissions</div>
+          <div class="body">
+            @let ss = submissionState();
+            @if (ss.status === 'ready') {
+              @if (ss.data.items.length === 0) {
+                <div class="muted">No submissions recorded yet.</div>
+              } @else {
+                <ul class="submissions">
+                  @for (s of ss.data.items; track s.id) {
+                    <li>
+                      <a [routerLink]="['/problem', s.contest_id, s.index]">{{ s.contest_id }}{{ s.index }}</a>
+                      <span class="muted">{{ s.problem_name }}</span>
+                      <div class="muted">{{ s.language }} · {{ s.verdict }}</div>
+                    </li>
+                  }
+                </ul>
+              }
+              @if (ss.data.total > 5) {
+                <div class="actions">
+                  <a class="button" routerLink="/progress">See all in progress</a>
+                </div>
+              }
+            } @else {
+              <div class="muted">Loading…</div>
+            }
+          </div>
+        </section>
+      </aside>
+    </div>
 } @else if (auth.loaded()) {
   <section class="roundbox">
     <div class="caption">Profile</div>

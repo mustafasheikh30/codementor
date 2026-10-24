@@ -7,6 +7,7 @@ from sqlmodel import SQLModel
 from app.core.config import settings
 from app.problems import models  # noqa: F401  (importing registers the tables)
 from app.solved import models as solved_models  # noqa: F401  (register solved table)
+from app.submissions import models as submission_models  # noqa: F401  (register submissions)
 from app.users import models as user_models  # noqa: F401  (register the users table)
 
 config = context.config
